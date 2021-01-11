@@ -1,0 +1,9 @@
+rootProject.name = "appsample"
+
+include ':app',
+        ':common',
+        ':core',
+        ':feature',
+        ':feature:article-galery-feature',
+        ':feature:article-page-feature',
+        ':core:article-data'
