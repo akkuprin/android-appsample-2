@@ -2,31 +2,26 @@ package ru.volgadev.article_galery.ui
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.OvershootInterpolator
+import android.view.View.OVER_SCROLL_NEVER
 import androidx.annotation.AnyThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
-import jp.wasabeef.recyclerview.animators.LandingAnimator
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import kotlinx.android.synthetic.main.galery_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.volgadev.article_galery.R
 import ru.volgadev.common.log.Logger
 
-
 class ArticleGalleryFragment : Fragment(R.layout.galery_fragment) {
 
     private val logger = Logger.get("ArticleGalleryFragment")
 
-    companion object {
-        fun newInstance() = ArticleGalleryFragment()
-    }
-
     private val viewModel: ArticleGaleryViewModel by viewModel()
 
+    // TODO: another way to send data from fragment to activity
     interface OnItemClickListener {
-        fun onClick(itemId: Long)
+        fun onClick(itemId: String)
     }
 
     @Volatile
@@ -41,23 +36,23 @@ class ArticleGalleryFragment : Fragment(R.layout.galery_fragment) {
         super.onViewCreated(view, savedInstanceState)
         logger.debug("On fragment created")
 
-        val gridLayoutManager = GridLayoutManager(context, 2)
         val viewAdapter = ArticleCardAdapter().apply {
             setOnItemClickListener(object : ArticleCardAdapter.OnItemClickListener {
-                override fun onClick(itemId: Long) {
+                override fun onClick(itemId: String) {
                     onItemClickListener?.onClick(itemId)
                 }
             })
         }
 
         contentRecyclerView.run {
-            layoutManager = gridLayoutManager
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = viewAdapter
-            itemAnimator = LandingAnimator(OvershootInterpolator(1f)).apply {
-                addDuration = 700
-                removeDuration = 100
-                moveDuration = 700
-                changeDuration = 100
+            overScrollMode = OVER_SCROLL_NEVER
+            itemAnimator = SlideInUpAnimator().apply {
+                addDuration = 248
+                removeDuration = 200
+                moveDuration = 200
+                changeDuration = 0
             }
         }
 

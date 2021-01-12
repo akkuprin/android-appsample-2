@@ -18,7 +18,7 @@ class ArticlePageViewModel(private val articleRepository: ArticleRepository) : V
     val article: LiveData<Article> = _article
 
     @AnyThread
-    fun onChooseArticle(id: Long) {
+    fun onChooseArticle(id: String) {
         viewModelScope.launch {
             val article = articleRepository.getArticle(id)
             if (article!=null) {

@@ -15,7 +15,7 @@ class FragmentProvider {
         private val FULLSCREEN_FRAGMENTS_CLASS_NAMES =
             listOf(ArticlePageFragment::class.java.name)
 
-        private val articleGalleryFragment by lazy { ArticleGalleryFragment.newInstance() }
+        private val articleGalleryFragment by lazy { ArticleGalleryFragment() }
 
         fun get(code: AppFragment): Fragment {
             return when (code) {
@@ -23,7 +23,7 @@ class FragmentProvider {
                     articleGalleryFragment
                 }
                 AppFragment.ARTICLE_PAGE_FRAGMENT -> {
-                    ArticlePageFragment.newInstance()
+                    ArticlePageFragment()
                 }
             }
         }

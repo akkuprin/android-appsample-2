@@ -6,12 +6,11 @@ import androidx.room.PrimaryKey
 @Entity
 data class Article(
     @PrimaryKey
-    val id: Long,
-    val tags: List<String> = listOf(),
-    val title: String,
-    val text: String,
+    val id: String,
+    val links: List<String> = emptyList(),
+    val symbol: String,
+    val name: String,
+    val description: String,
     val iconUrl: String? = null,
-    val averageTimeReadingMin: Int? = 0,
-    val hardLevel: Int? = 0,
-    val timestamp: Long
+    val tagline: String? = null
 )

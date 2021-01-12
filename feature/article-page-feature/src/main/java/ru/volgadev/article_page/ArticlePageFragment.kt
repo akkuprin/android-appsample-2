@@ -2,7 +2,6 @@ package ru.volgadev.article_page
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -16,10 +15,6 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
 
     private val logger = Logger.get("ArticlePageFragment")
 
-    companion object {
-        fun newInstance() = ArticlePageFragment()
-    }
-
     private val viewModel: ArticlePageViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,7 +23,8 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
 
         val args = arguments
         if (args != null && args.containsKey(ITEM_ID_KEY)) {
-            val itemId = args.getLong(ITEM_ID_KEY)
+            // TODO: обработать случай с empty
+            val itemId = args.getString(ITEM_ID_KEY).orEmpty()
             viewModel.onChooseArticle(itemId)
         } else {
             throw IllegalStateException("You should set ITEM_ID_KEY in fragment attributes!")
@@ -41,8 +37,8 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
 
         viewModel.article.observe(viewLifecycleOwner, Observer { article ->
             logger.debug("Set new ${article.id} article")
-            toolbarText.text = article.title
-            articleText.text = article.text
+            toolbarText.text = article.name
+            articleText.text = article.description
             if (article.iconUrl != null) Glide.with(articleImage.context).load(article.iconUrl)
                 .fallback(R.drawable.app_icon)
                 .error(R.drawable.app_icon)

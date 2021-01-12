@@ -29,7 +29,7 @@ class ArticleRepositoryImpl private constructor(
 
     override fun articles(): Flow<ArrayList<Article>> = articleChannel.asFlow()
 
-    override suspend fun getArticle(id: Long): Article? = withContext(Dispatchers.Default) {
+    override suspend fun getArticle(id: String): Article? = withContext(Dispatchers.Default) {
         logger.debug("Get article with id $id")
         val articles = articleChannel.value
         return@withContext articles.first { article -> article.id == id }

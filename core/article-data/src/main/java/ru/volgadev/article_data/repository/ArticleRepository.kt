@@ -11,5 +11,5 @@ interface ArticleRepository {
 
     fun articles(): Flow<ArrayList<Article>>
 
-    suspend fun getArticle(id: Long): Article?
+    suspend fun getArticle(id: String): Article?
 }

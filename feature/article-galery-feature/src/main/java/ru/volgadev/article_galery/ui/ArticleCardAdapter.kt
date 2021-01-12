@@ -25,7 +25,7 @@ class ArticleCardAdapter :
 
         private val viewClickListener = View.OnClickListener { view ->
             view?.let {
-                val id = view.tag as Long
+                val id = view.tag as String
                 logger.debug("On click $id")
                 onItemClickListener?.onClick(id)
             }
@@ -35,7 +35,7 @@ class ArticleCardAdapter :
             val holder = this
             card.tag = article.id
             val image = holder.image
-            holder.textView.text = article.title
+            holder.textView.text = article.name
 
             Glide.with(image.context).load(article.iconUrl)
                 .fallback(R.drawable.app_icon)
@@ -50,7 +50,7 @@ class ArticleCardAdapter :
     private var onItemClickListener: OnItemClickListener? = null
 
     interface OnItemClickListener {
-        fun onClick(itemId: Long)
+        fun onClick(itemId: String)
     }
 
     private var articleList = ArrayList<Article>()
