@@ -10,7 +10,7 @@ data class Article(
     val links: List<String> = emptyList(),
     val symbol: String,
     val name: String,
-    val description: String,
+    val descriptionHtml: String,
     val iconUrl: String? = null,
     val tagline: String? = null
 )

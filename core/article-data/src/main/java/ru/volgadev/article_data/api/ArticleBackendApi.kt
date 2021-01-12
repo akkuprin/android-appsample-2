@@ -5,5 +5,5 @@ import ru.volgadev.article_data.model.Article
 
 @WorkerThread
 interface ArticleBackendApi {
-    fun getUpdates(lastUpdateTime: Long): List<Article>
+    fun get(page: Int): List<Article>
 }

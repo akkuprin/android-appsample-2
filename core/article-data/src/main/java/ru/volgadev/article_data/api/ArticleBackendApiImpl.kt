@@ -10,7 +10,6 @@ import ru.volgadev.common.BACKEND_URL
 import ru.volgadev.common.log.Logger
 import java.net.ConnectException
 
-
 @WorkerThread
 class ArticleBackendApiImpl : ArticleBackendApi {
 
@@ -18,16 +17,16 @@ class ArticleBackendApiImpl : ArticleBackendApi {
     private val logger = Logger.get("ArticleBackendApiImpl")
 
     @Throws(ConnectException::class)
-    override fun getUpdates(lastUpdateTime: Long): List<Article> {
+    override fun get(page: Int): List<Article> {
         val request: Request = Request.Builder().apply {
-            url("$BACKEND_URL/api/v2/assets?with-metrics&page=1")
+            url("$BACKEND_URL/assets?page=$page")
         }.build()
 
         val result = arrayListOf<Article>()
 
         try {
             val response: Response = client.newCall(request).execute()
-            val stringResponse = response.body!!.string()
+            val stringResponse = response.body?.string().orEmpty()
             logger.debug("response = $stringResponse")
             val json = JSONObject(stringResponse)
             val articlesArray = json.getJSONArray("data")
@@ -37,24 +36,25 @@ class ArticleBackendApiImpl : ArticleBackendApi {
                 val symbol = articleJson.optString("symbol")
                 val name = articleJson.optString("name")
 
-                val generalJson = articleJson.optJSONObject("profile")?.optJSONObject("general")
+                val overviewJson = articleJson.optJSONObject("profile")?.optJSONObject("general")
+                    ?.optJSONObject("overview")
 
                 val links = arrayListOf<String>()
 
-                generalJson?.optJSONArray("official_links")?.let { tagsJs ->
+                overviewJson?.optJSONArray("official_links")?.let { tagsJs ->
                     for (t in 0 until tagsJs.length()) {
                         links.add(tagsJs[t].toString())
                     }
                 }
 
-                val description = generalJson?.optString("project_details").orEmpty()
-                val tagline = generalJson?.optString("tagline").orEmpty()
+                val description = overviewJson?.optString("project_details").orEmpty()
+                val tagline = overviewJson?.optString("tagline").orEmpty()
 
                 result.add(
                     Article(
                         id = id,
                         name = name,
-                        description = description,
+                        descriptionHtml = description,
                         links = links,
                         tagline = tagline,
                         symbol = symbol
@@ -65,6 +65,7 @@ class ArticleBackendApiImpl : ArticleBackendApi {
             logger.error("Error when get new articles $e")
             throw ConnectException("Error when get new articles $e")
         }
+        logger.debug("All items: ${result.joinToString(", ")}}")
         return result
     }
 }

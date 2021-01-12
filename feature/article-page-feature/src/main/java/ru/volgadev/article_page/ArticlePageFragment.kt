@@ -1,6 +1,7 @@
 package ru.volgadev.article_page
 
 import android.os.Bundle
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -8,6 +9,7 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_article_page.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.volgadev.common.log.Logger
+import android.text.Html.fromHtml
 
 const val ITEM_ID_KEY = "ITEM_ID"
 
@@ -38,7 +40,7 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
         viewModel.article.observe(viewLifecycleOwner, Observer { article ->
             logger.debug("Set new ${article.id} article")
             toolbarText.text = article.name
-            articleText.text = article.description
+            articleText.text = fromHtml(article.descriptionHtml, FROM_HTML_MODE_LEGACY)
             if (article.iconUrl != null) Glide.with(articleImage.context).load(article.iconUrl)
                 .fallback(R.drawable.app_icon)
                 .error(R.drawable.app_icon)

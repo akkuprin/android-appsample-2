@@ -73,7 +73,7 @@ class ArticleRepositoryImpl private constructor(
 
     @Throws(ConnectException::class)
     private suspend fun updateArticlesFromApi() = withContext(Dispatchers.IO) {
-        val newArticles = articleBackendApi.getUpdates(System.currentTimeMillis())
+        val newArticles = articleBackendApi.get(1)
         articlesDb.userDao().insertAll(*newArticles.toTypedArray())
         articleChannel.offer(ArrayList(newArticles))
     }
@@ -83,5 +83,4 @@ class ArticleRepositoryImpl private constructor(
         logger.debug("Load ${articles.size} entities from Db")
         articleChannel.offer(ArrayList(articles))
     }
-
 }
