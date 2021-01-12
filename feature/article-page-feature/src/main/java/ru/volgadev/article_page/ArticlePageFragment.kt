@@ -47,5 +47,4 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
                 .into(articleImage)
         })
     }
-
 }

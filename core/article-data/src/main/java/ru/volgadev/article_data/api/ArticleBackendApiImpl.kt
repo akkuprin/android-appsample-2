@@ -6,6 +6,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
 import ru.volgadev.article_data.model.Article
+import ru.volgadev.article_data.model.StringPair
 import ru.volgadev.common.BACKEND_URL
 import ru.volgadev.common.log.Logger
 import java.net.ConnectException
@@ -18,6 +19,7 @@ class ArticleBackendApiImpl : ArticleBackendApi {
 
     @Throws(ConnectException::class)
     override fun get(page: Int): List<Article> {
+        // TODO: понять почему падает в оффлайн
         val request: Request = Request.Builder().apply {
             url("$BACKEND_URL/assets?page=$page")
         }.build()
@@ -39,11 +41,16 @@ class ArticleBackendApiImpl : ArticleBackendApi {
                 val overviewJson = articleJson.optJSONObject("profile")?.optJSONObject("general")
                     ?.optJSONObject("overview")
 
-                val links = arrayListOf<String>()
+                val links = mutableListOf<StringPair>()
 
                 overviewJson?.optJSONArray("official_links")?.let { tagsJs ->
                     for (t in 0 until tagsJs.length()) {
-                        links.add(tagsJs[t].toString())
+                        val a = tagsJs[t] as JSONObject
+                        val linkName = a.optString("name")
+                        val link = a.optString("link")
+                        if (linkName.isNotBlank() && link.isNotBlank()) {
+                            links.add(Pair(linkName, link))
+                        }
                     }
                 }
 

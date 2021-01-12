@@ -3,6 +3,7 @@ package ru.volgadev.article_data.storage
 import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.room.*
+import org.json.JSONArray
 import ru.volgadev.article_data.model.Article
 import java.util.stream.Collectors
 
@@ -22,11 +23,11 @@ interface ArticleDao {
     fun delete(user: Article)
 
     @Query("SELECT EXISTS(SELECT * FROM article WHERE id = :id)")
-    fun isRowIsExist(id : Int) : Boolean
+    fun isRowIsExist(id: Int): Boolean
 }
 
 @Database(entities = [Article::class], version = 1)
-@TypeConverters(ListStringConverter::class)
+@TypeConverters(ListStringPairConverter::class)
 abstract class ArticleDatabase : RoomDatabase() {
 
     abstract fun userDao(): ArticleDao
@@ -50,17 +51,25 @@ abstract class ArticleDatabase : RoomDatabase() {
     }
 }
 
-private class ListStringConverter {
+private class ListStringPairConverter {
 
     private val DELIMITER = ","
 
     @TypeConverter
-    fun fromHobbies(hobbies: List<String>): String {
-        return hobbies.stream().collect(Collectors.joining(DELIMITER))
+    fun from(items: List<Pair<String, String>>): String {
+        return items.stream()
+            .map { item -> JSONArray().run { put(item.first); put(item.second); toString() } }
+            .collect(Collectors.joining(DELIMITER))
     }
 
     @TypeConverter
-    fun toHobbies(data: String): List<String> {
-        return data.split(DELIMITER)
+    fun to(data: String): List<Pair<String, String>> {
+        return data.split(DELIMITER).map { item ->
+            JSONArray(item).run {
+                val name = this.optString(0)
+                val link = this.optString(1)
+                Pair(name, link)
+            }
+        }
     }
 }

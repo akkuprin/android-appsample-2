@@ -21,7 +21,7 @@ fun Context.applicationDataDir(): String {
 fun Drawable.toBitmap(): Bitmap {
     val drawable = this
     if (drawable is BitmapDrawable) {
-        return (drawable as BitmapDrawable).bitmap
+        return drawable.bitmap
     }
     val bitmap = Bitmap.createBitmap(
         drawable.intrinsicWidth,
