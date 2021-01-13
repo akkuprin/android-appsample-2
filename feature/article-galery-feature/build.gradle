@@ -35,6 +35,8 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:${versions.glide}"
     implementation "jp.wasabeef:recyclerview-animators:${versions.recyclerviewanimators}"
 
+    implementation "android.arch.paging:runtime:${versions.paging}"
+
     implementation project(':common')
     implementation project(':core:article-data')
 }

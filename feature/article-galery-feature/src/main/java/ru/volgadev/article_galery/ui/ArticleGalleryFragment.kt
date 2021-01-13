@@ -54,6 +54,7 @@ class ArticleGalleryFragment : Fragment(R.layout.galery_fragment) {
                 moveDuration = 200
                 changeDuration = 0
             }
+
         }
 
         viewModel.articles.observe(viewLifecycleOwner, Observer { articles ->
