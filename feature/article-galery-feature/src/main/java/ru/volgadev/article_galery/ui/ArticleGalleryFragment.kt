@@ -47,7 +47,7 @@ class ArticleGalleryFragment : Fragment(R.layout.galery_fragment) {
             .setPageSize(10)
             .build()
 
-        val dataSource = ArticleDataSource()
+        val dataSource = viewModel.getPositionalDataSource()
 
         val mainHandler = Handler(Looper.getMainLooper())
 
