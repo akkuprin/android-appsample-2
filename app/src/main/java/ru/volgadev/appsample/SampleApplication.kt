@@ -11,7 +11,7 @@ import ru.volgadev.article_data.api.ArticleBackendApi
 import ru.volgadev.article_data.api.ArticleBackendApiImpl
 import ru.volgadev.article_data.repository.ArticleRepository
 import ru.volgadev.article_data.repository.ArticleRepositoryImpl
-import ru.volgadev.article_galery.ui.ArticleGaleryViewModel
+import ru.volgadev.article_galery.ui.ArticleGalleryViewModel
 import ru.volgadev.article_page.ArticlePageViewModel
 import ru.volgadev.common.log.AndroidLoggerDelegate
 import ru.volgadev.common.log.Logger
@@ -33,7 +33,7 @@ class SampleApplication : Application() {
         }
         single<ArticleBackendApi> { ArticleBackendApiImpl() }
         viewModel {
-            ArticleGaleryViewModel(get())
+            ArticleGalleryViewModel(get())
         }
         viewModel {
             ArticlePageViewModel(get())

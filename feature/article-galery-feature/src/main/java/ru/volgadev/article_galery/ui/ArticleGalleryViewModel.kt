@@ -6,7 +6,7 @@ import androidx.lifecycle.asLiveData
 import ru.volgadev.article_data.model.Article
 import ru.volgadev.article_data.repository.ArticleRepository
 
-class ArticleGaleryViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
+class ArticleGalleryViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
 
     val articles: LiveData<ArrayList<Article>> = articleRepository.articles().asLiveData()
 }
