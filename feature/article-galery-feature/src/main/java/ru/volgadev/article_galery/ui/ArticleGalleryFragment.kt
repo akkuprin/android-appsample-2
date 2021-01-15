@@ -43,8 +43,8 @@ class ArticleGalleryFragment : Fragment(R.layout.galery_fragment) {
 
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
-            .setInitialLoadSizeHint(10)
-            .setPageSize(10)
+            .setInitialLoadSizeHint(MAX_ITEMS_COUNT_ON_PAGE)
+            .setPageSize(MAX_ITEMS_COUNT_ON_PAGE)
             .build()
 
         val dataSource = viewModel.getPositionalDataSource()

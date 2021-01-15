@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
+import ru.volgadev.article_data.BuildConfig
 import ru.volgadev.article_data.model.Article
 import ru.volgadev.article_data.model.StringPair
 import ru.volgadev.common.BACKEND_URL
@@ -18,10 +19,14 @@ class ArticleBackendApiImpl : ArticleBackendApi {
     private val logger = Logger.get("ArticleBackendApiImpl")
 
     @Throws(ConnectException::class)
-    override fun get(page: Int): List<Article> {
+    override fun getArticlesOnPage(pageNum: Int): List<Article> {
+        if (BuildConfig.DEBUG && pageNum < 0) {
+            error("Page num must be non-negative")
+        }
+        val backendPageNum = pageNum + 1
         // TODO: понять почему падает в оффлайн
         val request: Request = Request.Builder().apply {
-            url("$BACKEND_URL/assets?page=$page")
+            url("$BACKEND_URL/assets?page=$backendPageNum")
         }.build()
 
         val result = arrayListOf<Article>()

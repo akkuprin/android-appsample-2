@@ -11,6 +11,8 @@ import ru.volgadev.article_data.model.Article
 import ru.volgadev.article_data.repository.ArticleRepository
 import ru.volgadev.common.log.Logger
 
+internal const val MAX_ITEMS_COUNT_ON_PAGE = 20
+
 class ArticleGalleryViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
 
 //    val _articles = MutableLiveData<HashMap<Int, ArrayList<Article>>>()
@@ -33,20 +35,21 @@ class ArticleGalleryViewModel(private val articleRepository: ArticleRepository) 
         override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Article>) {
             logger.debug(
                 "loadInitial, requestedStartPosition = " + params.requestedStartPosition +
-                        ", requestedLoadSize = " + params.requestedLoadSize
+                        ", requestedLoadSize = " + params.requestedLoadSize + ", pageSize = " + params.pageSize
             )
             coroutineScope.launch {
-                val pageArticles = articleRepository.getArticles(1)
-                callback.onResult(pageArticles, 0)
+                val pageArticles = articleRepository.getArticles(0)
+                callback.onResult(pageArticles, params.requestedStartPosition)
             }
         }
 
         override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Article>) {
+            val loadPage = params.startPosition/MAX_ITEMS_COUNT_ON_PAGE
             logger.debug(
-                "loadRange, startPosition = " + params.startPosition + ", loadSize = " + params.loadSize
+                "loadRange. startPosition = ${params.startPosition}; loadPage = $loadPage"
             )
             coroutineScope.launch {
-                val pageArticles = articleRepository.getArticles(2)
+                val pageArticles = articleRepository.getArticles(loadPage)
                 callback.onResult(pageArticles)
             }
         }

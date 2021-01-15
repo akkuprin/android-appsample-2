@@ -14,8 +14,8 @@ class ArticleRepositoryImpl(
 
     private val logger = Logger.get("ArticleRepositoryImpl")
 
-    override suspend fun getArticles(page: Int): List<Article> = withContext(Dispatchers.IO) {
-        val newArticles = articleBackendApi.get(1)
+    override suspend fun getArticles(pageNum: Int): List<Article> = withContext(Dispatchers.IO) {
+        val newArticles = articleBackendApi.getArticlesOnPage(pageNum)
         return@withContext newArticles
     }
 

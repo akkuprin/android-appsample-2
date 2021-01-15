@@ -4,7 +4,7 @@ import ru.volgadev.article_data.model.Article
 
 interface ArticleRepository {
 
-    suspend fun getArticles(page: Int): List<Article>
+    suspend fun getArticles(pageNum: Int): List<Article>
 
     suspend fun getArticle(id: String): Article?
 }
