@@ -30,8 +30,6 @@ class ArticleGalleryViewModel(private val articleRepository: ArticleRepository) 
 
         private val logger = Logger.get("ArticleDataSource")
 
-        // TODO: make correct pagination
-
         override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Article>) {
             logger.debug(
                 "loadInitial, requestedStartPosition = " + params.requestedStartPosition +

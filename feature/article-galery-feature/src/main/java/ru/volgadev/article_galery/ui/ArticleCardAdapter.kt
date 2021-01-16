@@ -34,6 +34,7 @@ class ArticleCardAdapter :
     inner class ViewHolder(private val card: CardView) : RecyclerView.ViewHolder(card) {
         private val textView = card.findViewById<TextView>(R.id.cardViewTitle)
         private val image = card.findViewById<ImageView>(R.id.cardViewImage)
+        private val cardViewDescription = card.findViewById<TextView>(R.id.cardViewDescription)
 
         private val viewClickListener = View.OnClickListener { view ->
             view?.let {
@@ -48,6 +49,10 @@ class ArticleCardAdapter :
             card.tag = article.id
             val image = holder.image
             holder.textView.text = article.name
+
+            article.tagline?.let { tagline ->
+                holder.cardViewDescription.text = tagline
+            }
 
             Glide.with(image.context).load(article.iconUrl)
                 .fallback(R.drawable.app_icon)
@@ -69,7 +74,6 @@ class ArticleCardAdapter :
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-
         val card = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_article, parent, false) as CardView
 

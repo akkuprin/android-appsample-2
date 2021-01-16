@@ -59,8 +59,15 @@ class ArticleBackendApiImpl : ArticleBackendApi {
                     }
                 }
 
-                val description = overviewJson?.optString("project_details").orEmpty()
-                val tagline = overviewJson?.optString("tagline").orEmpty()
+                var description: String? = null
+                var tagline: String? = null
+
+                overviewJson?.let { ojs ->
+                    description =
+                        if (!ojs.isNull("description")) ojs.optString("description") else null
+                    tagline =
+                        if (!ojs.isNull("tagline")) ojs.optString("tagline") else null
+                }
 
                 result.add(
                     Article(
