@@ -25,9 +25,12 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
 
         val args = arguments
         if (args != null && args.containsKey(ITEM_ID_KEY)) {
-            // TODO: обработать случай с empty
-            val itemId = args.getString(ITEM_ID_KEY).orEmpty()
-            viewModel.onChooseArticle(itemId)
+            val itemId = args.getString(ITEM_ID_KEY)
+            if (itemId == null) {
+                activity?.onBackPressed()
+            } else {
+                viewModel.onChooseArticle(itemId)
+            }
         } else {
             throw IllegalStateException("You should set ITEM_ID_KEY in fragment attributes!")
         }
@@ -37,14 +40,18 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
             activity?.onBackPressed()
         }
 
-        viewModel.article.observe(viewLifecycleOwner, Observer { article ->
+        viewModel.article.observe(viewLifecycleOwner, { article ->
             logger.debug("Set new ${article.id} article")
             toolbarText.text = article.name
-            articleText.text = fromHtml(article.descriptionHtml, FROM_HTML_MODE_LEGACY)
-            if (article.iconUrl != null) Glide.with(articleImage.context).load(article.iconUrl)
-                .fallback(R.drawable.app_icon)
-                .error(R.drawable.app_icon)
-                .into(articleImage)
+            article.descriptionHtml?.let { descriptionHtml ->
+                articleText.text = fromHtml(descriptionHtml, FROM_HTML_MODE_LEGACY)
+            }
+            article.iconUrl?.let { iconUrl->
+                Glide.with(articleImage.context).load(iconUrl)
+                    .fallback(R.drawable.app_icon)
+                    .error(R.drawable.app_icon)
+                    .into(articleImage)
+            }
         })
     }
 }

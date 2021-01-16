@@ -32,13 +32,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val galleryFragment: ArticleGalleryFragment =
-            FragmentProvider.get(AppFragment.GALERY_FRAGMENT) as ArticleGalleryFragment
+        val galleryFragment = FragmentProvider.create(AppFragment.GALERY) as ArticleGalleryFragment
         galleryFragment.setOnItemClickListener(object : ArticleGalleryFragment.OnItemClickListener {
             override fun onClick(itemId: String) {
                 logger.debug("Choose $itemId item to show")
-                val itemPageFragment =
-                    FragmentProvider.get(AppFragment.ARTICLE_PAGE_FRAGMENT) as ArticlePageFragment
+                val itemPageFragment = FragmentProvider.create(AppFragment.ARTICLE_PAGE) as ArticlePageFragment
                 showFragment(
                     itemPageFragment,
                     Bundle().apply { putString(ITEM_ID_KEY, itemId) },
