@@ -14,9 +14,6 @@ import ru.volgadev.common.BACKEND_URL
 import ru.volgadev.common.log.Logger
 import ru.volgadev.common.toString
 import java.net.ConnectException
-import java.security.Timestamp
-import java.time.Instant
-import java.time.ZoneId
 import java.util.*
 
 @WorkerThread
@@ -123,7 +120,7 @@ class ArticleBackendApiImpl : ArticleBackendApi {
             logger.debug("response = $stringResponse")
 
             val json = JSONObject(stringResponse)
-            val pricesArray = json.getJSONArray("values")
+            val pricesArray = json.getJSONObject("data").getJSONArray("values")
             for (i in 0 until pricesArray.length()) {
                 val dayValuesArray = pricesArray[i] as JSONArray
                 val dateTimestamp = dayValuesArray.optLong(0)

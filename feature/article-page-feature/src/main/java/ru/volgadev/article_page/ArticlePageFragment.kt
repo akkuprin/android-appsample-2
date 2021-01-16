@@ -46,12 +46,10 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
             article.descriptionHtml?.let { descriptionHtml ->
                 articleText.text = fromHtml(descriptionHtml, FROM_HTML_MODE_LEGACY)
             }
-            article.iconUrl?.let { iconUrl->
-                Glide.with(articleImage.context).load(iconUrl)
-                    .fallback(R.drawable.app_icon)
-                    .error(R.drawable.app_icon)
-                    .into(articleImage)
-            }
+        })
+
+        viewModel.articleTimeSeries.observe(viewLifecycleOwner, { timeSeries ->
+            logger.debug("Show timeSeries ${timeSeries}")
         })
     }
 }
