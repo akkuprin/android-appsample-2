@@ -1,21 +1,16 @@
 package ru.volgadev.article_galery.ui
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
 import androidx.annotation.AnyThread
 import androidx.fragment.app.Fragment
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import kotlinx.android.synthetic.main.galery_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.volgadev.article_data.model.Article
 import ru.volgadev.article_galery.R
 import ru.volgadev.common.log.Logger
-import java.util.concurrent.Executors
 
 
 class ArticleGalleryFragment : Fragment(R.layout.galery_fragment) {
@@ -41,42 +36,28 @@ class ArticleGalleryFragment : Fragment(R.layout.galery_fragment) {
         super.onViewCreated(view, savedInstanceState)
         logger.debug("On fragment created")
 
-        val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setInitialLoadSizeHint(MAX_ITEMS_COUNT_ON_PAGE)
-            .setPageSize(MAX_ITEMS_COUNT_ON_PAGE)
-            .build()
-
-        val dataSource = viewModel.getPositionalDataSource()
-
-        val mainHandler = Handler(Looper.getMainLooper())
-
-        val pagedList: PagedList<Article> =
-            PagedList.Builder(dataSource, config)
-                .setFetchExecutor(Executors.newSingleThreadExecutor())
-                .setNotifyExecutor { mainHandler.post(it) }
-                .build()
-
         val viewAdapter = ArticleCardAdapter().apply {
             setOnItemClickListener(object : ArticleCardAdapter.OnItemClickListener {
                 override fun onClick(itemId: String) {
                     onItemClickListener?.onClick(itemId)
                 }
             })
-            submitList(pagedList)
         }
+
+        viewModel.articlesPagedList.observe(viewLifecycleOwner, { pagedList ->
+            viewAdapter.submitList(pagedList)
+        })
 
         contentRecyclerView.run {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = viewAdapter
             overScrollMode = OVER_SCROLL_NEVER
             itemAnimator = SlideInUpAnimator().apply {
-                addDuration = 248
-                removeDuration = 200
-                moveDuration = 200
-                changeDuration = 0
+                addDuration = 124
+                removeDuration = 124
+                moveDuration = 124
+                changeDuration = 124
             }
-
         }
     }
 }

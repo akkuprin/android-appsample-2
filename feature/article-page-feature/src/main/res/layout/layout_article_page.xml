@@ -32,13 +32,11 @@
                 app:titleEnabled="true"
                 app:toolbarId="@id/pageToolbar">
 
-                <ImageView
-                    android:id="@+id/articleImage"
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/timeSeriesGraph"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/detail_app_bar_height"
-                    android:layout_marginTop="64dp"
-                    android:scaleType="fitCenter"
-                    tools:src="@drawable/app_icon"/>
+                    android:layout_marginTop="64dp" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/pageToolbar"

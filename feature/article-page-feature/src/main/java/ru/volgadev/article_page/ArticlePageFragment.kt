@@ -2,14 +2,15 @@ package ru.volgadev.article_page
 
 import android.os.Bundle
 import android.text.Html.FROM_HTML_MODE_LEGACY
+import android.text.Html.fromHtml
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import kotlinx.android.synthetic.main.layout_article_page.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.volgadev.common.log.Logger
-import android.text.Html.fromHtml
+
 
 const val ITEM_ID_KEY = "ITEM_ID"
 
@@ -50,6 +51,12 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
 
         viewModel.articleTimeSeries.observe(viewLifecycleOwner, { timeSeries ->
             logger.debug("Show timeSeries ${timeSeries}")
+            if (timeSeries != null) {
+                val series = LineGraphSeries(
+                    timeSeries.map { pair -> DataPoint(pair.first, pair.second) }.toTypedArray()
+                )
+                timeSeriesGraph.addSeries(series)
+            }
         })
     }
 }

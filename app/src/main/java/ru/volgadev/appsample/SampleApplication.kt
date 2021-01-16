@@ -27,7 +27,6 @@ class SampleApplication : Application() {
     private val sampleModule = module {
         single<ArticleRepository> {
             ArticleRepositoryImpl(
-                context = get(),
                 articleBackendApi = get()
             )
         }

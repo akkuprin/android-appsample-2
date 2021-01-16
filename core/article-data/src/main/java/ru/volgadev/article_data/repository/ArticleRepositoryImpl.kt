@@ -1,6 +1,5 @@
 package ru.volgadev.article_data.repository
 
-import android.content.Context
 import androidx.collection.ArrayMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,7 +12,6 @@ import java.util.*
 private const val AVERAGE_DAY_IN_MONTH = 30
 
 class ArticleRepositoryImpl(
-    private val context: Context,
     private val articleBackendApi: ArticleBackendApi
 ) : ArticleRepository {
 
@@ -31,8 +29,7 @@ class ArticleRepositoryImpl(
 
     override suspend fun getArticle(id: String): Article? = withContext(Dispatchers.Default) {
         logger.debug("getArticle($id)")
-        val article = if (cashedArticles.contains(id)) cashedArticles[id] else null
-        return@withContext article
+        return@withContext if (cashedArticles.contains(id)) cashedArticles[id] else null
     }
 
     override suspend fun getArticleLastMonthTimeSeries(id: String): PriceTimeSeries? =

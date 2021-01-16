@@ -33,6 +33,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.androidxlifecycle}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${versions.androidxlifecycle}"
     implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    implementation "com.jjoe64:graphview:${versions.graphview}"
 
     implementation project(':common')
     implementation project(':core:article-data')
