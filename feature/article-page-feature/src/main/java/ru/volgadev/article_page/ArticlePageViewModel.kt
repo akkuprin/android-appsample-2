@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.volgadev.article_data.model.Article
-import ru.volgadev.article_data.model.PriceTimeSeries
-import ru.volgadev.article_data.repository.ArticleRepository
+import ru.volgadev.article_data.domain.Article
+import ru.volgadev.article_data.domain.ArticleRepository
+import ru.volgadev.article_data.domain.PriceTimeSeries
+import ru.volgadev.common.ErrorResult
+import ru.volgadev.common.SuccessResult
 import ru.volgadev.common.log.Logger
 
 class ArticlePageViewModel(private val repository: ArticleRepository) : ViewModel() {
@@ -24,15 +26,26 @@ class ArticlePageViewModel(private val repository: ArticleRepository) : ViewMode
     @AnyThread
     fun onChooseArticle(id: String) {
         viewModelScope.launch {
-            val article = repository.getArticle(id)
-            if (article!=null) {
-                logger.debug("Use article ${article.id}")
-                _article.postValue(article)
+            val articleResult = repository.getArticle(id)
+            when (articleResult){
+                is SuccessResult -> {
+                    val article = articleResult.data
+                    logger.debug("Use article ${article.id}")
+                    _article.postValue(article)
 
-                val timeSeries = repository.getArticleLastMonthTimeSeries(article.id)
-                _articleTimeSeries.postValue(timeSeries)
-            } else {
-                logger.error("Article $id not found")
+                    val timeSeriesResult = repository.getArticleLastMonthTimeSeries(article.id)
+                    when (timeSeriesResult){
+                        is SuccessResult -> {
+                            _articleTimeSeries.postValue(timeSeriesResult.data)
+                        }
+                        is ErrorResult -> {
+                            logger.error("Error when load time series")
+                        }
+                    }
+                }
+                is ErrorResult -> {
+                    logger.error("Article $id not found")
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package ru.volgadev.article_data.api
+package ru.volgadev.article_data.data
 
 import androidx.annotation.WorkerThread
 import okhttp3.OkHttpClient
@@ -7,9 +7,10 @@ import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.volgadev.article_data.BuildConfig
-import ru.volgadev.article_data.model.Article
-import ru.volgadev.article_data.model.PriceTimeSeries
-import ru.volgadev.article_data.model.StringPair
+import ru.volgadev.article_data.domain.Article
+import ru.volgadev.article_data.domain.ArticleBackendApi
+import ru.volgadev.article_data.domain.PriceTimeSeries
+import ru.volgadev.article_data.domain.StringPair
 import ru.volgadev.common.BACKEND_URL
 import ru.volgadev.common.log.Logger
 import ru.volgadev.common.toString

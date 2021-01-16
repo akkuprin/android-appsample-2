@@ -59,7 +59,6 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
         timeSeriesGraph.visibility = View.GONE
 
         viewModel.articleTimeSeries.observe(viewLifecycleOwner, { timeSeries ->
-            logger.debug("Show timeSeries ${timeSeries}")
             if (timeSeries != null) {
                 val series = LineGraphSeries(
                     timeSeries.map { pair -> DataPoint(pair.first, pair.second) }.toTypedArray()

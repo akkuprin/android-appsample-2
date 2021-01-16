@@ -11,9 +11,10 @@ import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.volgadev.article_data.model.Article
-import ru.volgadev.article_data.repository.ArticleRepository
-import ru.volgadev.common.log.Logger
+import ru.volgadev.article_data.domain.Article
+import ru.volgadev.article_data.domain.ArticleRepository
+import ru.volgadev.common.ErrorResult
+import ru.volgadev.common.SuccessResult
 import java.util.concurrent.Executors
 
 internal const val MAX_ITEMS_COUNT_ON_PAGE = 20
@@ -49,30 +50,35 @@ class ArticleGalleryViewModel(private val articleRepository: ArticleRepository) 
         private val articleRepository: ArticleRepository
     ) : PositionalDataSource<Article>() {
 
-        private val logger = Logger.get("ArticleDataSource")
-
         override fun loadInitial(
             params: LoadInitialParams,
             callback: LoadInitialCallback<Article>
         ) {
-            logger.debug(
-                "loadInitial, requestedStartPosition = " + params.requestedStartPosition +
-                        ", requestedLoadSize = " + params.requestedLoadSize + ", pageSize = " + params.pageSize
-            )
+
             coroutineScope.launch {
-                val pageArticles = articleRepository.getArticles(0)
-                callback.onResult(pageArticles, params.requestedStartPosition)
+                val pageArticlesResult = articleRepository.getArticles(0)
+                when (pageArticlesResult) {
+                    is SuccessResult -> {
+                        callback.onResult(pageArticlesResult.data, params.requestedStartPosition)
+                    }
+                    is ErrorResult -> {
+                    }
+                }
             }
         }
 
         override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Article>) {
             val loadPage = params.startPosition / MAX_ITEMS_COUNT_ON_PAGE
-            logger.debug(
-                "loadRange. startPosition = ${params.startPosition}; loadPage = $loadPage"
-            )
+
             coroutineScope.launch {
-                val pageArticles = articleRepository.getArticles(loadPage)
-                callback.onResult(pageArticles)
+                val pageArticlesResult = articleRepository.getArticles(loadPage)
+                when (pageArticlesResult) {
+                    is SuccessResult -> {
+                        callback.onResult(pageArticlesResult.data)
+                    }
+                    is ErrorResult -> {
+                    }
+                }
             }
         }
     }
