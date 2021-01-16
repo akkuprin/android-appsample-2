@@ -36,7 +36,7 @@
                     android:id="@+id/timeSeriesGraph"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/detail_app_bar_height"
-                    android:layout_marginTop="128dp" />
+                    android:layout_marginTop="100dp" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/pageToolbar"
@@ -117,6 +117,7 @@
                     android:id="@+id/articleText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
                     android:minHeight="@dimen/description_min_height"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"

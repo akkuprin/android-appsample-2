@@ -22,7 +22,7 @@
         app:itemBackground="@color/navigationBarColor"
         app:itemIconTint="@color/colorLightText"
         app:itemTextColor="@color/colorLightText"
-        app:labelVisibilityMode="auto"
+        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_navigation_menu" />
 
 </RelativeLayout>
