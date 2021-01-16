@@ -7,6 +7,7 @@ import ru.volgadev.article_data.api.ArticleBackendApi
 import ru.volgadev.article_data.model.Article
 import ru.volgadev.article_data.model.PriceTimeSeries
 import ru.volgadev.common.log.Logger
+import java.net.ConnectException
 import java.util.*
 
 private const val AVERAGE_DAY_IN_MONTH = 30
@@ -20,11 +21,15 @@ class ArticleRepositoryImpl(
     private val cashedArticles = ArrayMap<String, Article>()
 
     override suspend fun getArticles(pageNum: Int): List<Article> = withContext(Dispatchers.IO) {
-        val newArticles = articleBackendApi.getArticlesOnPage(pageNum)
-        newArticles.forEach { article ->
-            cashedArticles[article.id] = article
+        try {
+            val newArticles = articleBackendApi.getArticlesOnPage(pageNum)
+            newArticles.forEach { article ->
+                cashedArticles[article.id] = article
+            }
+            return@withContext newArticles
+        } catch (e: ConnectException){
+            return@withContext emptyList()
         }
-        return@withContext newArticles
     }
 
     override suspend fun getArticle(id: String): Article? = withContext(Dispatchers.Default) {
@@ -36,9 +41,12 @@ class ArticleRepositoryImpl(
         withContext(Dispatchers.IO) {
             logger.debug("getArticleLastMonthTimeSeries($id)")
             if (cashedArticles.contains(id)) {
-                val startDate = Calendar.getInstance()
-                    .apply { add(Calendar.DAY_OF_YEAR, -AVERAGE_DAY_IN_MONTH) }.time
-                return@withContext articleBackendApi.getArticleTimeSeries(id, startDate = startDate)
+                try {
+                val startDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -AVERAGE_DAY_IN_MONTH) }.time
+                    return@withContext articleBackendApi.getArticleTimeSeries(id, startDate = startDate)
+                } catch (e: ConnectException){
+                    return@withContext null
+                }
             } else {
                 return@withContext null
             }

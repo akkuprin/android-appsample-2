@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.text.Html.fromHtml
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.jjoe64.graphview.Viewport
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import kotlinx.android.synthetic.main.layout_article_page.*
@@ -49,13 +51,19 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
             }
         })
 
+        timeSeriesGraph.visibility = View.GONE
+
         viewModel.articleTimeSeries.observe(viewLifecycleOwner, { timeSeries ->
             logger.debug("Show timeSeries ${timeSeries}")
             if (timeSeries != null) {
                 val series = LineGraphSeries(
                     timeSeries.map { pair -> DataPoint(pair.first, pair.second) }.toTypedArray()
                 )
+                series.setAnimated(true)
                 timeSeriesGraph.addSeries(series)
+                timeSeriesGraph.isVisible = true
+            } else {
+                timeSeriesGraph.isVisible = false
             }
         })
     }

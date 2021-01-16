@@ -102,17 +102,16 @@ class ArticleBackendApiImpl : ArticleBackendApi {
         startDate: Date,
         endDate: Date
     ): PriceTimeSeries {
-
+        logger.debug("getArticleTimeSeries($articleId, $startDate, $endDate)")
         val result = PriceTimeSeries()
-
+        val url = "$BACKEND_URL/v1/assets/$articleId/metrics/price/time-series" +
+                "?start=${startDate.toString("yyyy-MM-dd")}" +
+                "&end=${endDate.toString("yyyy-MM-dd")}" +
+                "&interval=1d"
+        logger.debug("url = $url")
         try {
             val request: Request = Request.Builder().apply {
-                url(
-                    "$BACKEND_URL/v1/assets/$articleId/metrics/price/time-series" +
-                            "?start=${startDate.toString("yyyy-mm-dd")}" +
-                            "&end=${endDate.toString("yyyy-mm-dd")}" +
-                            "&interval=1d"
-                )
+                url(url)
             }.build()
 
             val response: Response = client.newCall(request).execute()
