@@ -6,7 +6,6 @@ import android.text.Html.fromHtml
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.jjoe64.graphview.Viewport
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import kotlinx.android.synthetic.main.layout_article_page.*
@@ -45,7 +44,13 @@ class ArticlePageFragment : Fragment(R.layout.layout_article_page) {
 
         viewModel.article.observe(viewLifecycleOwner, { article ->
             logger.debug("Set new ${article.id} article")
-            toolbarText.text = article.name
+            toolbarText.text = "${article.name} - ${article.symbol}"
+            article.tagline?.let { tagline ->
+                articleTagline.text = tagline
+            }
+            article.currentPriceUsd?.let { currentPriceUsd ->
+                articlePrice.text = "$currentPriceUsd $ per ${article.symbol}"
+            }
             article.descriptionHtml?.let { descriptionHtml ->
                 articleText.text = fromHtml(descriptionHtml, FROM_HTML_MODE_LEGACY)
             }
