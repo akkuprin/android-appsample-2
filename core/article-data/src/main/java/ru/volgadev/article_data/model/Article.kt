@@ -14,5 +14,6 @@ data class Article(
     val name: String,
     val descriptionHtml: String? = null,
     val iconUrl: String? = null,
-    val tagline: String? = null
+    val tagline: String? = null,
+    val currentPriceUsd: Double? = null
 )

@@ -64,9 +64,15 @@ class ArticleBackendApiImpl : ArticleBackendApi {
 
                 overviewJson?.let { ojs ->
                     description =
-                        if (!ojs.isNull("description")) ojs.optString("description") else null
+                        if (!ojs.isNull("project_details")) ojs.optString("project_details") else null
                     tagline =
                         if (!ojs.isNull("tagline")) ojs.optString("tagline") else null
+                }
+
+                var priceUsd: Double? = null
+                val marketData = articleJson.optJSONObject("metrics")?.optJSONObject("market_data")
+                marketData?.let {
+                    priceUsd = marketData.optDouble("price_usd")
                 }
 
                 result.add(
@@ -76,7 +82,8 @@ class ArticleBackendApiImpl : ArticleBackendApi {
                         descriptionHtml = description,
                         links = links,
                         tagline = tagline,
-                        symbol = symbol
+                        symbol = symbol,
+                        currentPriceUsd = priceUsd
                     )
                 )
             }
