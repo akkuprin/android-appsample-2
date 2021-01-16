@@ -12,6 +12,8 @@ import android.transition.TransitionManager
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun Context.applicationDataDir(): String {
     val p: PackageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
@@ -66,4 +68,9 @@ fun View.setVisibleWithTransition(
     transition.addTarget(this)
     TransitionManager.beginDelayedTransition(parent, transition)
     this.visibility = visibility
+}
+
+fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+    val formatter = SimpleDateFormat(format, locale)
+    return formatter.format(this)
 }

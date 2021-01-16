@@ -1,13 +1,10 @@
 package ru.volgadev.article_data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import java.util.*
 
 typealias StringPair = Pair<String, String>
 
-@Entity
 data class Article(
-    @PrimaryKey
     val id: String,
     val links: List<StringPair> = emptyList(),
     val symbol: String,
@@ -17,3 +14,5 @@ data class Article(
     val tagline: String? = null,
     val currentPriceUsd: Double? = null
 )
+
+typealias PriceTimeSeries = ArrayList<Pair<Date, Double>>

@@ -4,13 +4,20 @@ import androidx.annotation.WorkerThread
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import org.json.JSONArray
 import org.json.JSONObject
 import ru.volgadev.article_data.BuildConfig
 import ru.volgadev.article_data.model.Article
+import ru.volgadev.article_data.model.PriceTimeSeries
 import ru.volgadev.article_data.model.StringPair
 import ru.volgadev.common.BACKEND_URL
 import ru.volgadev.common.log.Logger
+import ru.volgadev.common.toString
 import java.net.ConnectException
+import java.security.Timestamp
+import java.time.Instant
+import java.time.ZoneId
+import java.util.*
 
 @WorkerThread
 class ArticleBackendApiImpl : ArticleBackendApi {
@@ -24,14 +31,12 @@ class ArticleBackendApiImpl : ArticleBackendApi {
             error("Page num must be non-negative")
         }
         val backendPageNum = pageNum + 1
-        // TODO: понять почему падает в оффлайн
-        val request: Request = Request.Builder().apply {
-            url("$BACKEND_URL/assets?page=$backendPageNum")
-        }.build()
-
         val result = arrayListOf<Article>()
 
         try {
+            val request: Request = Request.Builder().apply {
+                url("$BACKEND_URL/v2/assets?page=$backendPageNum")
+            }.build()
             val response: Response = client.newCall(request).execute()
             val stringResponse = response.body?.string().orEmpty()
             logger.debug("response = $stringResponse")
@@ -90,6 +95,45 @@ class ArticleBackendApiImpl : ArticleBackendApi {
         } catch (e: Exception) {
             logger.error("Error when get new articles $e")
             throw ConnectException("Error when get new articles $e")
+        }
+        logger.debug("All items: ${result.joinToString(", ")}}")
+        return result
+    }
+
+    override fun getArticleTimeSeries(
+        articleId: String,
+        startDate: Date,
+        endDate: Date
+    ): PriceTimeSeries {
+
+        val result = PriceTimeSeries()
+
+        try {
+            val request: Request = Request.Builder().apply {
+                url(
+                    "$BACKEND_URL/v1/assets/$articleId/metrics/price/time-series" +
+                            "?start=${startDate.toString("yyyy-mm-dd")}" +
+                            "&end=${endDate.toString("yyyy-mm-dd")}" +
+                            "&interval=1d"
+                )
+            }.build()
+
+            val response: Response = client.newCall(request).execute()
+            val stringResponse = response.body?.string().orEmpty()
+            logger.debug("response = $stringResponse")
+
+            val json = JSONObject(stringResponse)
+            val pricesArray = json.getJSONArray("values")
+            for (i in 0 until pricesArray.length()) {
+                val dayValuesArray = pricesArray[i] as JSONArray
+                val dateTimestamp = dayValuesArray.optLong(0)
+                val date = Date(dateTimestamp)
+                val priceOfDay = dayValuesArray.optDouble(1)
+                result.add(Pair(date, priceOfDay))
+            }
+        } catch (e: Exception) {
+            logger.error("Error when get time series $e")
+            throw ConnectException("Error when get time series $e")
         }
         logger.debug("All items: ${result.joinToString(", ")}}")
         return result
